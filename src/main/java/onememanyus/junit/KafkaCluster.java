@@ -40,7 +40,7 @@ public class KafkaCluster extends ExternalResource {
 		if(zookeeper == null)
 			zookeeper = new EmbeddedZookeeper();
 		if(kafka == null)
-			kafka     = new EmbeddedKafka(brokerConfig);
+			kafka     = new EmbeddedKafka(brokerConfig,zookeeper);
 		if(schemaRegistry == null)
 			schemaRegistry = new EmbeddedSchemaRegistry(InstanceSpec.getRandomPort(),zookeeper.connectString());
 		log.debug("Embedded kafka cluster ready");
