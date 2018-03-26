@@ -1,6 +1,7 @@
 package onememanyus.embedded;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.curator.test.TestingServer;
 
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EmbeddedZookeeper implements EmbeddedServer {
 	
 	final TestingServer server;
+	final CountDownLatch latch = new CountDownLatch(1);
 	
 	public EmbeddedZookeeper() throws Exception {
 		log.debug("Starting Zookeeper server");
@@ -25,7 +27,12 @@ public class EmbeddedZookeeper implements EmbeddedServer {
 	public void close() throws Exception {
 		log.debug("Stopping Zookeeper server at {}...",server.getConnectString());
 		server.close();
-		log.debug("Zookeeper server stopped.");		
+		log.debug("Zookeeper server stopped.");
+		latch.countDown();
+	}
+	
+	public void awaitShutdown() throws InterruptedException {
+		latch.await();
 	}
 	
 	

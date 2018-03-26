@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.kafka.common.utils.Time;
 
@@ -19,6 +20,7 @@ public class EmbeddedKafka implements EmbeddedServer {
 	final KafkaServerStartable server;
 	final Path        logDir = Files.createTempDirectory("kafkaembed");
 	final KafkaConfig kafkaConfig;
+	final CountDownLatch latch = new CountDownLatch(1);
 	
 	protected Properties mergeConfig(Properties config,EmbeddedZookeeper zk) {
 		Properties merged = new Properties();
@@ -65,6 +67,7 @@ public class EmbeddedKafka implements EmbeddedServer {
 		log.debug("Deleting temporary files");
 		deleteAll(logDir);
 		log.debug("Embedded kafka server shut down");
+		latch.countDown();
 	}
 	
 	
